@@ -1,6 +1,6 @@
-# Aadinath Consultancy Internal Dashboard
+# Billoza - Food Billing and Management App
 
-This is an internal-use dashboard developed for Aadinath Consultancy using **React (CRA)** and **Tailwind CSS**. It is meant strictly for internal developers and contributors. This project uses **npm** as the package manager.
+A modern food billing and management application for restaurants built with React and Tailwind CSS.
 
 ---
 
@@ -8,6 +8,7 @@ This is an internal-use dashboard developed for Aadinath Consultancy using **Rea
 
 - React (via Create React App)
 - Tailwind CSS
+- React Icons
 - npm (Node Package Manager)
 
 ---
@@ -26,8 +27,8 @@ Make sure you have the following installed:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/Nidhishah67/aadinathconsultancy.git
-   cd aadinathconsultancy
+   git clone https://github.com/dhruvahir777/billoza.git
+   cd billoza
    ```
 
 2. Install dependencies:
@@ -46,21 +47,14 @@ Make sure you have the following installed:
 
 ---
 
-## 🎨 Tailwind CSS Setup
+## 📱 Features
 
-Tailwind CSS is configured using PostCSS.
-
-Files to check:
-
-- `tailwind.config.js` — Tailwind configuration
-- `postcss.config.js` — PostCSS configuration
-- `src/index.css` — Tailwind directives included:
-
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
+- **Menu Management** - Add, edit, and manage restaurant menu items
+- **Order Management** - Process and track customer orders
+- **Reports & Analytics** - View sales reports and performance analytics
+- **History Tracking** - Track order history and customer data
+- **Settings Management** - Configure app settings and preferences
+- **Responsive Design** - Works on desktop and mobile devices
 
 ---
 
@@ -75,31 +69,46 @@ Use the following commands with **npm**:
 
 ---
 
-## 📌 Internal Contribution Workflow
+## 📁 Project Structure
 
-> For authorized internal developers only.
-
-- Create a feature branch:
-
-  ```bash
-  git checkout -b your-name/feature-name
-  ```
-
-- Write clean, modular code and commit clearly:
-
-  ```bash
-  git commit -m "Implemented responsive sidebar"
-  ```
-
-- Push your changes and inform the team on internal communication channels (Slack, Teams, etc.)
-
-- Do **NOT** commit any sensitive environment keys or credentials.
+```
+src/
+├── components/          # Reusable UI components
+├── pages/              # Main application pages
+├── layouts/            # Layout components
+├── assets/             # Images, fonts, and other assets
+├── constants/          # Application constants and data
+├── hooks/              # Custom React hooks
+├── routes/             # Application routing
+├── services/           # API services
+└── utils/              # Utility functions
+```
 
 ---
 
-## 📬 Contact
+## 🎨 Tailwind CSS
 
-For feature clarification or technical help, contact the assigned project manager or team lead directly.
+This project uses Tailwind CSS for styling with a custom configuration that includes:
+
+- Custom color themes for light/dark mode
+- Custom fonts and typography
+- Responsive breakpoints
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/new-feature`)
+3. Commit your changes (`git commit -m 'Add new feature'`)
+4. Push to the branch (`git push origin feature/new-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
 
