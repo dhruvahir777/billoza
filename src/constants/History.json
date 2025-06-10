@@ -1,0 +1,22 @@
+[
+  { "orderId": "ORD123456", "date": "2025-05-26T10:15:00", "amount": 350, "dayOfWeek": "Monday" },
+  { "orderId": "ORD123457", "date": "2025-05-25T14:30:00", "amount": 120, "dayOfWeek": "Sunday" },
+  { "orderId": "ORD123458", "date": "2025-05-24T19:45:00", "amount": 220, "dayOfWeek": "Saturday" },
+  { "orderId": "ORD123459", "date": "2025-05-24T09:10:00", "amount": 480, "dayOfWeek": "Saturday" },
+  { "orderId": "ORD123460", "date": "2025-05-23T16:00:00", "amount": 175, "dayOfWeek": "Friday" },
+  { "orderId": "ORD123461", "date": "2025-05-22T11:20:00", "amount": 390, "dayOfWeek": "Thursday" },
+  { "orderId": "ORD123462", "date": "2025-05-21T13:45:00", "amount": 210, "dayOfWeek": "Wednesday" },
+  { "orderId": "ORD123463", "date": "2025-05-20T18:30:00", "amount": 340, "dayOfWeek": "Tuesday" },
+  { "orderId": "ORD123464", "date": "2025-05-19T12:00:00", "amount": 260, "dayOfWeek": "Monday" },
+  { "orderId": "ORD123465", "date": "2025-05-18T15:10:00", "amount": 410, "dayOfWeek": "Sunday" },
+  { "orderId": "ORD123466", "date": "2025-05-17T17:25:00", "amount": 330, "dayOfWeek": "Saturday" },
+  { "orderId": "ORD123467", "date": "2025-05-16T10:50:00", "amount": 295, "dayOfWeek": "Friday" },
+  { "orderId": "ORD123468", "date": "2025-05-15T14:40:00", "amount": 180, "dayOfWeek": "Thursday" },
+  { "orderId": "ORD123469", "date": "2025-05-14T19:05:00", "amount": 370, "dayOfWeek": "Wednesday" },
+  { "orderId": "ORD123470", "date": "2025-05-13T11:30:00", "amount": 250, "dayOfWeek": "Tuesday" },
+  { "orderId": "ORD123471", "date": "2025-05-12T16:15:00", "amount": 320, "dayOfWeek": "Monday" },
+  { "orderId": "ORD123472", "date": "2025-05-11T13:00:00", "amount": 405, "dayOfWeek": "Sunday" },
+  { "orderId": "ORD123473", "date": "2025-05-10T18:20:00", "amount": 285, "dayOfWeek": "Saturday" },
+  { "orderId": "ORD123474", "date": "2025-05-09T09:40:00", "amount": 360, "dayOfWeek": "Friday" },
+  { "orderId": "ORD123475", "date": "2025-05-08T15:55:00", "amount": 230, "dayOfWeek": "Thursday" }
+]
