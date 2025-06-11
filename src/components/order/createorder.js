@@ -11,19 +11,24 @@ import FoodCard from '../common/cards/FoodCard';
 const parsePrice = (priceStr) => Number(priceStr.replace(/[^\d.]/g, ''));
 
 function CreateOrder() {
-  const { user } = useAuth();
+  const { user, getUserData } = useAuth();
   const [currentMenuData, setCurrentMenuData] = useState([]);
   
   // Load menu data based on user type
   useEffect(() => {
+    console.log('Order useEffect triggered, user:', user); // Debug log
     if (user?.hasStaticData) {
       // Guest user gets static data
+      console.log('Loading static data for guest user in order page');
       setCurrentMenuData(menuData);
-    } else {
-      // New users start with empty menu
-      setCurrentMenuData([]);
+    } else if (user) {
+      // Google user gets their saved data
+      console.log('Loading saved data for Google user in order page, user ID:', user.id);
+      const savedMenuData = getUserData('menuData');
+      console.log('Retrieved saved menu data in order page:', savedMenuData);
+      setCurrentMenuData(savedMenuData || []);
     }
-  }, [user]);
+  }, [user, getUserData]);
 
   // Unique categories from current menu
   const categories = currentMenuData.length > 0 ? 

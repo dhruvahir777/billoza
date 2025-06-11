@@ -13,7 +13,8 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userType, setUserType] = useState(null); // 'guest', 'google', 'email'
+  const [userType, setUserType] = useState(null); // 'guest', 'google'
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
 
   // Check if user is already logged in on app start
   useEffect(() => {
@@ -21,10 +22,28 @@ export const AuthProvider = ({ children }) => {
     const savedUserType = localStorage.getItem('billoza_user_type');
     
     if (savedUser && savedUserType) {
-      setUser(JSON.parse(savedUser));
-      setUserType(savedUserType);
-      setIsLoggedIn(true);
+      try {
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
+        setUserType(savedUserType);
+        setIsLoggedIn(true);
+        
+        // For Google users, check if their data exists and update hasExistingData flag
+        if (savedUserType === 'google') {
+          const existingUserData = localStorage.getItem(`billoza_user_data_${parsedUser.id}`);
+          parsedUser.hasExistingData = !!existingUserData;
+          setUser(parsedUser);
+        }
+      } catch (error) {
+        console.error('Error parsing saved user data:', error);
+        // Clear corrupted data
+        localStorage.removeItem('billoza_user');
+        localStorage.removeItem('billoza_user_type');
+      }
     }
+    
+    // Set loading to false after checking localStorage
+    setIsLoading(false);
   }, []);
 
   // Guest login function
@@ -45,43 +64,83 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('billoza_user_type', 'guest');
   };
 
-  // Google login function
+  // Google login function with data persistence
   const loginWithGoogle = (googleResponse) => {
+    const userId = googleResponse.sub || googleResponse.googleId;
+    
+    // Check if this user has logged in before
+    const existingUserData = localStorage.getItem(`billoza_user_data_${userId}`);
+    const hasExistingData = !!existingUserData;
+    
     const googleUser = {
-      id: googleResponse.sub || googleResponse.googleId,
+      id: userId,
       name: googleResponse.name,
       email: googleResponse.email,
       avatar: googleResponse.picture || googleResponse.imageUrl,
-      hasStaticData: false // New users won't see static data
+      hasStaticData: false, // Google users don't see static data
+      hasExistingData: hasExistingData // Flag to check if user has previous data
     };
     
     setUser(googleUser);
     setUserType('google');
     setIsLoggedIn(true);
     
+    // Save current session
     localStorage.setItem('billoza_user', JSON.stringify(googleUser));
     localStorage.setItem('billoza_user_type', 'google');
+    
+    // Create user data storage if it doesn't exist
+    if (!hasExistingData) {
+      const initialUserData = {
+        menuData: [],
+        orders: [],
+        settings: {},
+        createdAt: new Date().toISOString()
+      };
+      localStorage.setItem(`billoza_user_data_${userId}`, JSON.stringify(initialUserData));
+    }
+    
+    return Promise.resolve(googleUser);
   };
 
-  // Email/Password login function
-  const loginWithEmail = (email, password) => {
-    // For demo purposes - in real app, this would be API call
-    const emailUser = {
-      id: `email_${Date.now()}`,
-      name: email.split('@')[0], // Use email prefix as name
-      email: email,
-      avatar: null,
-      hasStaticData: false // New users won't see static data
-    };
+  // Get user's specific data
+  const getUserData = (dataType) => {
+    console.log('getUserData called with:', { dataType, user: user?.id, hasStaticData: user?.hasStaticData });
+    if (!user || user.hasStaticData) return null;
     
-    setUser(emailUser);
-    setUserType('email');
-    setIsLoggedIn(true);
+    const storageKey = `billoza_user_data_${user.id}`;
+    console.log('Looking for data with key:', storageKey);
+    const userData = localStorage.getItem(storageKey);
+    console.log('Raw userData from localStorage:', userData);
     
-    localStorage.setItem('billoza_user', JSON.stringify(emailUser));
-    localStorage.setItem('billoza_user_type', 'email');
+    if (userData) {
+      try {
+        const parsedData = JSON.parse(userData);
+        console.log('Parsed userData:', parsedData);
+        const result = parsedData[dataType] || [];
+        console.log(`Returning ${dataType}:`, result);
+        return result;
+      } catch (error) {
+        console.error('Error parsing userData:', error);
+        return [];
+      }
+    }
+    console.log('No userData found, returning empty array');
+    return [];
+  };
+
+  // Save user's specific data
+  const saveUserData = (dataType, data) => {
+    if (!user || user.hasStaticData) return false;
     
-    return Promise.resolve(emailUser);
+    const existingData = localStorage.getItem(`billoza_user_data_${user.id}`);
+    const userData = existingData ? JSON.parse(existingData) : {};
+    
+    userData[dataType] = data;
+    userData.lastUpdated = new Date().toISOString();
+    
+    localStorage.setItem(`billoza_user_data_${user.id}`, JSON.stringify(userData));
+    return true;
   };
 
   // Logout function
@@ -98,9 +157,11 @@ export const AuthProvider = ({ children }) => {
     user,
     isLoggedIn,
     userType,
+    isLoading, // Expose loading state
     loginAsGuest,
     loginWithGoogle,
-    loginWithEmail,
+    getUserData,
+    saveUserData,
     logout
   };
 

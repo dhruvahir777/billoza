@@ -30,8 +30,8 @@ export default function MenuHeading({ menuData, setMenuData, isModalOpen, setIsM
     <>
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md mx-4 shadow-xl border border-gray-200 dark:border-gray-700">
+        <div className="fixed inset-0 flex items-center justify-center z-[9999] bg-black bg-opacity-50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md mx-4 shadow-2xl border border-gray-200 dark:border-gray-700 transform transition-all duration-200 scale-100">
             <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
               {editingItem ? "Edit Menu Item" : "Add New Item"}
             </h3>

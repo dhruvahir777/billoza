@@ -1,57 +1,123 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { FiUser, FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
+import { FiUser, FiArrowRight } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { loginWithEmail, loginWithGoogle, loginAsGuest } = useAuth();
+  const { loginWithGoogle, loginAsGuest } = useAuth();
   const navigate = useNavigate();
 
-  // Handle Email/Password Login
-  const handleEmailLogin = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
-    try {
-      if (!email || !password) {
-        setError('Please fill in all fields');
-        return;
+  // Initialize Google Sign-In
+  useEffect(() => {
+    // Handle Google OAuth Response
+    const handleGoogleResponse = async (response) => {
+      try {
+        setIsLoading(true);
+        setError('');
+        
+        // Decode the JWT token to get user information
+        const userInfo = JSON.parse(atob(response.credential.split('.')[1]));
+        
+        const googleUser = {
+          sub: userInfo.sub,
+          name: userInfo.name,
+          email: userInfo.email,
+          picture: userInfo.picture
+        };
+        
+        await loginWithGoogle(googleUser);
+        navigate('/order');
+      } catch (err) {
+        setError('Google login failed. Please try again.');
+        console.error('Google login error:', err);
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-      await loginWithEmail(email, password);
-      navigate('/order'); // Redirect to dashboard
-    } catch (err) {
-      setError('Login failed. Please try again.');
-    } finally {
-      setIsLoading(false);
+    // Load Google Identity Services script
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+
+    script.onload = () => {
+      if (window.google) {
+        try {
+          // Initialize Google Identity Services (no button rendering)
+          window.google.accounts.id.initialize({
+            client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+            callback: handleGoogleResponse,
+            auto_select: false,
+            cancel_on_tap_outside: false,
+          });
+        } catch (error) {
+          console.error('Google OAuth initialization error:', error);
+          setError('Google authentication setup incomplete.');
+        }
+      }
+    };
+
+    return () => {
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+    };
+  }, [loginWithGoogle, navigate]);
+
+  // Handle Custom Google Login Button Click
+  const handleCustomGoogleLogin = () => {
+    if (window.google) {
+      // Try to prompt for account selection
+      window.google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          // If prompt fails, try alternative method
+          console.log('Prompt not displayed, trying alternative method');
+          
+          // Create temporary button and click it programmatically
+          const tempDiv = document.createElement('div');
+          tempDiv.style.position = 'absolute';
+          tempDiv.style.top = '-9999px';
+          tempDiv.style.left = '-9999px';
+          document.body.appendChild(tempDiv);
+          
+          try {
+            window.google.accounts.id.renderButton(tempDiv, {
+              theme: 'outline',
+              size: 'large',
+              text: 'continue_with',
+              shape: 'rectangular',
+            });
+            
+            // Simulate click on the hidden button
+            setTimeout(() => {
+              const hiddenButton = tempDiv.querySelector('div[role="button"]');
+              if (hiddenButton) {
+                hiddenButton.click();
+              }
+              // Clean up
+              if (document.body.contains(tempDiv)) {
+                document.body.removeChild(tempDiv);
+              }
+            }, 100);
+          } catch (error) {
+            console.error('Fallback method failed:', error);
+            setError('Google Sign-In failed. Please try refreshing the page.');
+            // Clean up
+            if (document.body.contains(tempDiv)) {
+              document.body.removeChild(tempDiv);
+            }
+          }
+        }
+      });
+    } else {
+      setError('Google Sign-In not loaded. Please refresh the page.');
     }
-  };
-
-  // Handle Google Login (Simulate for now)
-  const handleGoogleLogin = () => {
-    setIsLoading(true);
-    
-    // Simulate Google OAuth response
-    setTimeout(() => {
-      const mockGoogleResponse = {
-        sub: 'google_' + Date.now(),
-        name: 'Google User',
-        email: 'user@gmail.com',
-        picture: 'https://lh3.googleusercontent.com/a/default-user=s96-c'
-      };
-      
-      loginWithGoogle(mockGoogleResponse);
-      navigate('/order');
-      setIsLoading(false);
-    }, 1000);
   };
 
   // Handle Guest Login
@@ -62,9 +128,9 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
-      <div className="max-w-md w-full space-y-8">
+      <div className="max-w-4xl w-full">
         {/* Header */}
-        <div className="text-center">
+        <div className="text-center mb-8">
           <div className="mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center mb-4">
             <img
               src={process.env.PUBLIC_URL + "/foodexlogo.png"}
@@ -76,113 +142,121 @@ export default function Login() {
             Welcome to Billoza
           </h2>
           <p className="mt-2 text-gray-600 dark:text-gray-400">
-            Restaurant Management System
+            Choose your preferred way to access the Restaurant Management System
           </p>
         </div>
 
-        {/* Login Form */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 space-y-6">
-          {error && (
-            <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg p-3">
-              <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
-            </div>
-          )}
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg p-3 mb-6 max-w-md mx-auto">
+            <p className="text-red-600 dark:text-red-400 text-sm text-center">{error}</p>
+          </div>
+        )}
 
-          {/* Email/Password Form */}
-          <form onSubmit={handleEmailLogin} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Email Address
-              </label>
-              <div className="relative">
-                <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter your email"
-                />
+        {/* Two Cards Layout */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Guest Login Card */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <div className="p-8">
+              {/* Guest Card Header */}
+              <div className="text-center mb-6">
+                <div className="mx-auto h-16 w-16 bg-blue-500 rounded-full flex items-center justify-center mb-4">
+                  <FiUser size={32} className="text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  Guest Access
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  Explore with sample data and features
+                </p>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter your password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                >
-                  {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
-                </button>
+              {/* Guest Features */}
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center text-gray-700 dark:text-gray-300">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                  <span className="text-sm">Instant access with sample menu</span>
+                </div>
+                <div className="flex items-center text-gray-700 dark:text-gray-300">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                  <span className="text-sm">Try all features without signup</span>
+                </div>
+                <div className="flex items-center text-gray-700 dark:text-gray-300">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                  <span className="text-sm">Perfect for demo and testing</span>
+                </div>
               </div>
-            </div>
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
-            >
-              {isLoading ? (
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              ) : (
-                <>
-                  <FiUser size={18} />
-                  <span>Sign In with Email</span>
-                </>
-              )}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
-                Or continue with
-              </span>
+              {/* Guest Login Button */}
+              <button
+                onClick={handleGuestLogin}
+                disabled={isLoading}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-4 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-3 shadow-lg hover:shadow-xl"
+              >
+                <FiUser size={20} />
+                <span className="text-lg">Continue as Guest</span>
+                <FiArrowRight size={20} />
+              </button>
             </div>
           </div>
 
-          {/* Google Login Button */}
-          <button
-            onClick={handleGoogleLogin}
-            disabled={isLoading}
-            className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
-          >
-            <FcGoogle size={20} />
-            <span>Continue with Google</span>
-          </button>
+          {/* Google Login Card */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <div className="p-8">
+              {/* Google Card Header */}
+              <div className="text-center mb-6">
+                <div className="mx-auto h-16 w-16 bg-white -500 rounded-full flex items-center justify-center mb-4">
+                  <FcGoogle size={32} />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  Google Account
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  Save your data and access from anywhere
+                </p>
+              </div>
 
-          {/* Guest Login Button */}
-          <button
-            onClick={handleGuestLogin}
-            className="w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 border border-gray-300 dark:border-gray-600"
-          >
-            <FiUser size={18} />
-            <span>Continue as Guest</span>
-          </button>
+              {/* Google Features */}
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center text-gray-700 dark:text-gray-300">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                  <span className="text-sm">Save your custom menu items</span>
+                </div>
+                <div className="flex items-center text-gray-700 dark:text-gray-300">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                  <span className="text-sm">Access data from any device</span>
+                </div>
+                <div className="flex items-center text-gray-700 dark:text-gray-300">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                  <span className="text-sm">Secure cloud synchronization</span>
+                </div>
+              </div>
 
-          {/* Info Message */}
-          <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
-            <p className="text-blue-600 dark:text-blue-400 text-sm text-center">
-              <strong>Guest users</strong> can explore with sample data. 
-              <strong> New users</strong> start with empty dashboard.
-            </p>
+              {/* Google Login Button - Custom Only */}
+              <button
+                onClick={handleCustomGoogleLogin}
+                disabled={isLoading}
+                className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium py-4 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-3 shadow-lg hover:shadow-xl"
+              >
+                {isLoading ? (
+                  <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <>
+                    <FcGoogle size={24} />
+                    <span className="text-lg">Continue with Google</span>
+                    <FiArrowRight size={20} />
+                  </>
+                )}
+              </button>
+            </div>
           </div>
+        </div>
+
+        {/* Footer Info */}
+        <div className="mt-8 text-center">
+          <p className="text-gray-500 dark:text-gray-400 text-sm">
+            Choose <strong className="text-orange-500">Guest</strong> for quick demo or <strong className="text-blue-500">Google</strong> to save your data
+          </p>
         </div>
       </div>
     </div>
