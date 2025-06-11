@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { FiMonitor } from "react-icons/fi";
+import { useTheme } from "../../contexts/ThemeContext";
 
-export default function AppearanceSettings({ theme, setTheme }) {
+export default function AppearanceSettings() {
+  const { theme, setTheme } = useTheme();
   const [accentColor, setAccentColor] = useState("#3B82F6"); // Default blue
   const [customColor, setCustomColor] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
@@ -45,7 +47,7 @@ export default function AppearanceSettings({ theme, setTheme }) {
       {/* Theme Selection */}
       <div className="mb-8">
         <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Theme</h3>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">Choose your preferred theme for the entire dashboard.</p>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">Choose your preferred theme for the entire dashboard. Default is Dark Mode.</p>
         
         <div className="grid grid-cols-2 gap-4 max-w-md">
           <button
@@ -69,8 +71,14 @@ export default function AppearanceSettings({ theme, setTheme }) {
             }`}
           >
             <div className="w-full h-16 bg-gradient-to-br from-gray-800 to-gray-900 rounded mb-3 border"></div>
-            <div className="text-sm font-medium text-gray-900 dark:text-white">Dark Mode</div>
+            <div className="text-sm font-medium text-gray-900 dark:text-white">Dark Mode (Default)</div>
           </button>
+        </div>
+        
+        <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
+          <p className="text-sm text-blue-800 dark:text-blue-200">
+            💡 <strong>Note:</strong> The app defaults to Dark Mode. You can switch to Light Mode anytime from here.
+          </p>
         </div>
       </div>
 
