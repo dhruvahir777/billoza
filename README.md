@@ -2,6 +2,8 @@
 
 A modern food billing and management application for restaurants built with React and Tailwind CSS.
 
+<!-- Deployment Trigger: June 11, 2025 -->
+
 ---
 
 ## 🔧 Tech Stack
