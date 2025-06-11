@@ -1,5 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Main from "../pages/main";
+import Login from "../pages/auth/Login";
+import ProtectedRoute from "../components/auth/ProtectedRoute";
 import AddCustomer from "../components/history/historydisplay";
 import Customer from "../pages/history/history";
 import Order from "../pages/order/order";
@@ -9,7 +11,16 @@ import Settings from "../pages/settings/settings";
 
 const AppRoutes = () => (
   <Routes>
-    <Route path="/" element={<Main />}>
+    {/* Public Route */}
+    <Route path="/login" element={<Login />} />
+    
+    {/* Protected Routes */}
+    <Route path="/" element={
+      <ProtectedRoute>
+        <Main />
+      </ProtectedRoute>
+    }>
+      <Route index element={<Order />} />
       <Route path="order" element={<Order />} />
       <Route path="customers" element={<Customer />} />
       <Route path="add-customer" element={<AddCustomer />} />

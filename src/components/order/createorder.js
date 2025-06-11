@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import menuData from '../../constants/menu.json';
+import { useAuth } from '../../contexts/AuthContext';
 import { FiTrash2 } from 'react-icons/fi';
 import { FiPlus, FiMinus, FiSearch } from 'react-icons/fi';
 import { GiMeal, GiFullPizza, GiWineGlass, GiHotMeal, GiFoodTruck } from 'react-icons/gi';
@@ -10,8 +11,25 @@ import FoodCard from '../common/cards/FoodCard';
 const parsePrice = (priceStr) => Number(priceStr.replace(/[^\d.]/g, ''));
 
 function CreateOrder() {
-  // Unique categories from menu
-  const categories = ['All', ...Array.from(new Set(menuData.map(i => i.type)))];
+  const { user } = useAuth();
+  const [currentMenuData, setCurrentMenuData] = useState([]);
+  
+  // Load menu data based on user type
+  useEffect(() => {
+    if (user?.hasStaticData) {
+      // Guest user gets static data
+      setCurrentMenuData(menuData);
+    } else {
+      // New users start with empty menu
+      setCurrentMenuData([]);
+    }
+  }, [user]);
+
+  // Unique categories from current menu
+  const categories = currentMenuData.length > 0 ? 
+    ['All', ...Array.from(new Set(currentMenuData.map(i => i.type)))] : 
+    ['All'];
+  
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [orderItems, setOrderItems] = useState([]);
   const [search, setSearch] = useState("");
@@ -22,7 +40,7 @@ function CreateOrder() {
   const searchValue = search.trim().toLowerCase();
 
   // Filtered menu items with search
-  const filteredMenu = (selectedCategory === 'All' ? menuData : menuData.filter(i => i.type === selectedCategory))
+  const filteredMenu = (selectedCategory === 'All' ? currentMenuData : currentMenuData.filter(i => i.type === selectedCategory))
     .filter(i => {
       const name = (i.itemName || '').toString().toLowerCase();
       const price = (i.price || '').replace(/[^\d]/g, '');
@@ -124,22 +142,45 @@ function CreateOrder() {
         </div>
         {/* Card grid fills remaining height, scrolls if overflow */}
         <div className="flex-1 overflow-y-auto scrollbar-dot">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pb-4">
-            {filteredMenu.length === 0 ? (
-              <div className="col-span-full text-center text-gray-400 py-10 text-lg">No items found.</div>
-            ) : (
-              filteredMenu.map((item) => (
-                <FoodCard
-                  key={item.itemName}
-                  name={item.itemName}
-                  category={item.type}
-                  price={parsePrice(item.price)}
-                  onAdd={() => addItem(item)}
-                  imageUrl="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80"
-                />
-              ))
-            )}
-          </div>
+          {currentMenuData.length === 0 && !user?.hasStaticData ? (
+            // Empty state for new users
+            <div className="col-span-full text-center py-20">
+              <div className="bg-surface-light/10 dark:bg-surface-dark/10 rounded-2xl p-8 backdrop-blur-md border border-border-light/20 dark:border-border-dark/20">
+                <GiMeal className="mx-auto text-gray-400 mb-4" size={48} />
+                <h3 className="text-xl font-semibold text-text-light dark:text-text-dark mb-2">
+                  No Menu Items Yet
+                </h3>
+                <p className="text-gray-500 dark:text-gray-400 mb-4">
+                  You need to add menu items first before taking orders.
+                </p>
+                <button
+                  onClick={() => window.location.href = '/menu'}
+                  className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl"
+                >
+                  Go to Menu Management
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pb-4">
+              {filteredMenu.length === 0 ? (
+                <div className="col-span-full text-center text-gray-400 py-10 text-lg">
+                  {user?.hasStaticData ? "No items found." : "No menu items available."}
+                </div>
+              ) : (
+                filteredMenu.map((item) => (
+                  <FoodCard
+                    key={item.itemName}
+                    name={item.itemName}
+                    category={item.type}
+                    price={parsePrice(item.price)}
+                    onAdd={() => addItem(item)}
+                    imageUrl="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80"
+                  />
+                ))
+              )}
+            </div>
+          )}
         </div>
       </div>
       

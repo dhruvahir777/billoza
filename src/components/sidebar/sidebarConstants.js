@@ -15,6 +15,7 @@ export const TEXTS = {
   settings: "Settings",
   userInitials: "JD",
   userName: "John Doe",
+  userEmail: "john.doe@foodx.com",
 };
 
 export const MENU_ITEMS = [

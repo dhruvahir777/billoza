@@ -1,6 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import { useEffect } from "react";
 import AppRoutes from "./routes/AppRoutes";
+import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
   // Initialize theme globally
@@ -14,7 +15,9 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <AppRoutes />
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
       </BrowserRouter>
     </div>
   );
