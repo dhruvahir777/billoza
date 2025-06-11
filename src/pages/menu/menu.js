@@ -49,7 +49,7 @@ export default function Menu() {
             onClick={handleOpenModal}
             className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-            Add Item
+            Add Item2
           </button>
         </div>
       </div>
