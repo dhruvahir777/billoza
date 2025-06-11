@@ -43,6 +43,15 @@ export default function Login() {
   // Initialize Google Sign-In
   useEffect(() => {
     const initializeGoogleSignIn = () => {
+      // Get Google Client ID from environment or fallback
+      const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || '1074356963495-76dk8mq4st771d55t68smmpc0p19l8b8.apps.googleusercontent.com';
+      
+      console.log('Environment check:', {
+        NODE_ENV: process.env.NODE_ENV,
+        hasClientId: !!process.env.REACT_APP_GOOGLE_CLIENT_ID,
+        fallbackUsed: !process.env.REACT_APP_GOOGLE_CLIENT_ID
+      });
+
       // Load Google Identity Services script
       const script = document.createElement('script');
       script.src = 'https://accounts.google.com/gsi/client';
@@ -51,22 +60,22 @@ export default function Login() {
       document.head.appendChild(script);
 
       script.onload = () => {
-        if (window.google && process.env.REACT_APP_GOOGLE_CLIENT_ID) {
+        if (window.google && googleClientId) {
           try {
             // Initialize Google Identity Services
             window.google.accounts.id.initialize({
-              client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+              client_id: googleClientId,
               callback: handleGoogleResponse,
               auto_select: false,
               cancel_on_tap_outside: false,
             });
-            console.log('Google OAuth initialized successfully');
+            console.log('Google OAuth initialized successfully with Client ID:', googleClientId.substring(0, 20) + '...');
           } catch (error) {
             console.error('Google OAuth initialization error:', error);
             setError('Google authentication setup failed');
           }
         } else {
-          console.warn('Google Client ID not found in environment variables');
+          console.error('Google Client ID not available');
           setError('Google authentication not configured');
         }
       };
