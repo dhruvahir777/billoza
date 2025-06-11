@@ -18,32 +18,47 @@ export const AuthProvider = ({ children }) => {
 
   // Check if user is already logged in on app start
   useEffect(() => {
-    const savedUser = localStorage.getItem('billoza_user');
-    const savedUserType = localStorage.getItem('billoza_user_type');
+    console.log('AuthProvider: Checking for existing user session...');
     
-    if (savedUser && savedUserType) {
-      try {
-        const parsedUser = JSON.parse(savedUser);
-        setUser(parsedUser);
-        setUserType(savedUserType);
-        setIsLoggedIn(true);
-        
-        // For Google users, check if their data exists and update hasExistingData flag
-        if (savedUserType === 'google') {
-          const existingUserData = localStorage.getItem(`billoza_user_data_${parsedUser.id}`);
-          parsedUser.hasExistingData = !!existingUserData;
+    try {
+      const savedUser = localStorage.getItem('billoza_user');
+      const savedUserType = localStorage.getItem('billoza_user_type');
+      
+      console.log('AuthProvider: Found saved data:', { savedUser: !!savedUser, savedUserType });
+      
+      if (savedUser && savedUserType) {
+        try {
+          const parsedUser = JSON.parse(savedUser);
           setUser(parsedUser);
+          setUserType(savedUserType);
+          setIsLoggedIn(true);
+          
+          // For Google users, check if their data exists and update hasExistingData flag
+          if (savedUserType === 'google') {
+            const existingUserData = localStorage.getItem(`billoza_user_data_${parsedUser.id}`);
+            parsedUser.hasExistingData = !!existingUserData;
+            setUser(parsedUser);
+          }
+          
+          console.log('AuthProvider: User restored from localStorage:', parsedUser);
+        } catch (error) {
+          console.error('Error parsing saved user data:', error);
+          // Clear corrupted data
+          localStorage.removeItem('billoza_user');
+          localStorage.removeItem('billoza_user_type');
         }
-      } catch (error) {
-        console.error('Error parsing saved user data:', error);
-        // Clear corrupted data
-        localStorage.removeItem('billoza_user');
-        localStorage.removeItem('billoza_user_type');
+      } else {
+        console.log('AuthProvider: No existing session found');
       }
+    } catch (error) {
+      console.error('AuthProvider: Error accessing localStorage:', error);
     }
     
     // Set loading to false after checking localStorage
-    setIsLoading(false);
+    setTimeout(() => {
+      setIsLoading(false);
+      console.log('AuthProvider: Loading complete');
+    }, 100); // Small delay to ensure proper state update
   }, []);
 
   // Guest login function

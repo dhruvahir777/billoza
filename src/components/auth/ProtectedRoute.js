@@ -5,8 +5,11 @@ import { Navigate } from 'react-router-dom';
 export default function ProtectedRoute({ children }) {
   const { isLoggedIn, isLoading } = useAuth();
 
+  console.log('ProtectedRoute: Current state:', { isLoggedIn, isLoading });
+
   // Show loading spinner while checking authentication
   if (isLoading) {
+    console.log('ProtectedRoute: Showing loading spinner');
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
@@ -19,8 +22,10 @@ export default function ProtectedRoute({ children }) {
 
   // Only redirect to login if not loading and not logged in
   if (!isLoggedIn) {
+    console.log('ProtectedRoute: User not logged in, redirecting to login');
     return <Navigate to="/login" replace />;
   }
 
+  console.log('ProtectedRoute: User authenticated, showing protected content');
   return children;
 }

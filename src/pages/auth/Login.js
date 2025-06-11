@@ -1,46 +1,129 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { FiUser, FiArrowRight } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 
 export default function Login() {
-  const navigate = useNavigate();
-  const { loginAsGuest, loginWithGoogle } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Handle Guest Login
-  const handleGuestLogin = () => {
-    setIsLoading(true);
-    try {
-      loginAsGuest();
-      navigate('/');
-    } catch (err) {
-      setError('Failed to login as guest');
-    } finally {
-      setIsLoading(false);
+  const { loginWithGoogle, loginAsGuest } = useAuth();
+  const navigate = useNavigate();
+
+  // Initialize Google Sign-In
+  useEffect(() => {
+    // Handle Google OAuth Response
+    const handleGoogleResponse = async (response) => {
+      try {
+        setIsLoading(true);
+        setError('');
+        
+        // Decode the JWT token to get user information
+        const userInfo = JSON.parse(atob(response.credential.split('.')[1]));
+        
+        const googleUser = {
+          sub: userInfo.sub,
+          name: userInfo.name,
+          email: userInfo.email,
+          picture: userInfo.picture
+        };
+        
+        await loginWithGoogle(googleUser);
+        navigate('/order');
+      } catch (err) {
+        setError('Google login failed. Please try again.');
+        console.error('Google login error:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    // Load Google Identity Services script
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+
+    script.onload = () => {
+      if (window.google) {
+        try {
+          // Initialize Google Identity Services (no button rendering)
+          window.google.accounts.id.initialize({
+            client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+            callback: handleGoogleResponse,
+            auto_select: false,
+            cancel_on_tap_outside: false,
+          });
+        } catch (error) {
+          console.error('Google OAuth initialization error:', error);
+          setError('Google authentication setup incomplete.');
+        }
+      }
+    };
+
+    return () => {
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+    };
+  }, [loginWithGoogle, navigate]);
+
+  // Handle Custom Google Login Button Click
+  const handleCustomGoogleLogin = () => {
+    if (window.google) {
+      // Try to prompt for account selection
+      window.google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          // If prompt fails, try alternative method
+          console.log('Prompt not displayed, trying alternative method');
+          
+          // Create temporary button and click it programmatically
+          const tempDiv = document.createElement('div');
+          tempDiv.style.position = 'absolute';
+          tempDiv.style.top = '-9999px';
+          tempDiv.style.left = '-9999px';
+          document.body.appendChild(tempDiv);
+          
+          try {
+            window.google.accounts.id.renderButton(tempDiv, {
+              theme: 'outline',
+              size: 'large',
+              text: 'continue_with',
+              shape: 'rectangular',
+            });
+            
+            // Simulate click on the hidden button
+            setTimeout(() => {
+              const hiddenButton = tempDiv.querySelector('div[role="button"]');
+              if (hiddenButton) {
+                hiddenButton.click();
+              }
+              // Clean up
+              if (document.body.contains(tempDiv)) {
+                document.body.removeChild(tempDiv);
+              }
+            }, 100);
+          } catch (error) {
+            console.error('Fallback method failed:', error);
+            setError('Google Sign-In failed. Please try refreshing the page.');
+            // Clean up
+            if (document.body.contains(tempDiv)) {
+              document.body.removeChild(tempDiv);
+            }
+          }
+        }
+      });
+    } else {
+      setError('Google Sign-In not loaded. Please refresh the page.');
     }
   };
 
-  // Handle Custom Google Login
-  const handleCustomGoogleLogin = () => {
-    setIsLoading(true);
-    try {
-      // Simulate Google login for demo purposes
-      const mockGoogleResponse = {
-        sub: 'google_user_' + Date.now(),
-        name: 'Google User',
-        email: 'user@gmail.com',
-        picture: 'https://via.placeholder.com/40'
-      };
-      loginWithGoogle(mockGoogleResponse);
-      navigate('/');
-    } catch (err) {
-      setError('Failed to login with Google');
-    } finally {
-      setIsLoading(false);
-    }
+  // Handle Guest Login
+  const handleGuestLogin = () => {
+    loginAsGuest();
+    navigate('/order');
   };
 
   return (
@@ -122,7 +205,7 @@ export default function Login() {
             <div className="p-8">
               {/* Google Card Header */}
               <div className="text-center mb-6">
-                <div className="mx-auto h-16 w-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-md">
+                <div className="mx-auto h-16 w-16 bg-white -500 rounded-full flex items-center justify-center mb-4">
                   <FcGoogle size={32} />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
