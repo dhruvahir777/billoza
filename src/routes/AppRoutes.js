@@ -1,6 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import Main from "../pages/main";
 import Login from "../pages/auth/Login";
+import ProfileSetup from "../pages/auth/ProfileSetup";
+import PasswordVerification from "../pages/auth/PasswordVerification";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 import AddCustomer from "../components/history/historydisplay";
 import Customer from "../pages/history/history";
@@ -13,6 +15,8 @@ const AppRoutes = () => (
   <Routes>
     {/* Public Route */}
     <Route path="/login" element={<Login />} />
+    <Route path="/profile-setup" element={<ProfileSetup />} />
+    <Route path="/password-verification" element={<PasswordVerification />} />
     
     {/* Protected Routes */}
     <Route path="/" element={

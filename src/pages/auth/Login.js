@@ -30,8 +30,17 @@ export default function Login() {
         picture: userInfo.picture
       };
       
-      await loginWithGoogle(googleUser);
-      navigate('/');
+      const loginResult = await loginWithGoogle(googleUser);
+      
+      // Check if profile setup is needed
+      if (!loginResult.profileSetupComplete) {
+        console.log('Profile setup required, redirecting to setup page');
+        navigate('/profile-setup');
+      } else {
+        // Profile is complete, redirect to password verification
+        console.log('Profile complete, redirecting to password verification');
+        navigate('/password-verification');
+      }
     } catch (err) {
       console.error('Google login error:', err);
       setError('Google login failed. Please try again.');

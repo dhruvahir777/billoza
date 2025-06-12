@@ -93,8 +93,23 @@ export const AuthProvider = ({ children }) => {
       email: googleResponse.email,
       avatar: googleResponse.picture || googleResponse.imageUrl,
       hasStaticData: false, // Google users don't see static data
-      hasExistingData: hasExistingData // Flag to check if user has previous data
+      hasExistingData: hasExistingData, // Flag to check if user has previous data
+      profileSetupComplete: false, // Initially false, will be updated after checking profile
+      passwordVerified: false // New flag for password verification
     };
+    
+    // Check if user has completed profile setup
+    if (hasExistingData) {
+      try {
+        const userData = JSON.parse(existingUserData);
+        if (userData.profile && userData.profile.profileSetupComplete) {
+          googleUser.profileSetupComplete = true;
+          googleUser.profileData = userData.profile;
+        }
+      } catch (error) {
+        console.error('Error parsing existing user data:', error);
+      }
+    }
     
     setUser(googleUser);
     setUserType('google');
@@ -110,12 +125,33 @@ export const AuthProvider = ({ children }) => {
         menuData: [],
         orders: [],
         settings: {},
+        profile: {},
         createdAt: new Date().toISOString()
       };
       localStorage.setItem(`billoza_user_data_${userId}`, JSON.stringify(initialUserData));
     }
     
     return Promise.resolve(googleUser);
+  };
+
+  // Verify password function
+  const verifyPassword = (password) => {
+    if (!user || user.hasStaticData) return false;
+    
+    const profileData = getUserProfile();
+    if (profileData && profileData.password === password) {
+      // Update user with password verified flag
+      const updatedUser = {
+        ...user,
+        passwordVerified: true
+      };
+      
+      setUser(updatedUser);
+      localStorage.setItem('billoza_user', JSON.stringify(updatedUser));
+      return true;
+    }
+    
+    return false;
   };
 
   // Get user's specific data
@@ -158,6 +194,52 @@ export const AuthProvider = ({ children }) => {
     return true;
   };
 
+  // Save user profile function
+  const saveUserProfile = (profileData) => {
+    if (!user || user.hasStaticData) return Promise.reject('Cannot save profile for guest users');
+    
+    const existingData = localStorage.getItem(`billoza_user_data_${user.id}`);
+    const userData = existingData ? JSON.parse(existingData) : {};
+    
+    userData.profile = {
+      ...userData.profile,
+      ...profileData,
+      lastUpdated: new Date().toISOString()
+    };
+    
+    localStorage.setItem(`billoza_user_data_${user.id}`, JSON.stringify(userData));
+    
+    // Update current user object
+    const updatedUser = {
+      ...user,
+      name: profileData.name,
+      profileSetupComplete: true,
+      profileData: userData.profile
+    };
+    
+    setUser(updatedUser);
+    localStorage.setItem('billoza_user', JSON.stringify(updatedUser));
+    
+    return Promise.resolve(updatedUser);
+  };
+
+  // Get user profile data
+  const getUserProfile = () => {
+    if (!user || user.hasStaticData) return null;
+    
+    const userData = localStorage.getItem(`billoza_user_data_${user.id}`);
+    if (userData) {
+      try {
+        const parsedData = JSON.parse(userData);
+        return parsedData.profile || {};
+      } catch (error) {
+        console.error('Error parsing user profile:', error);
+        return {};
+      }
+    }
+    return {};
+  };
+
   // Logout function
   const logout = () => {
     setUser(null);
@@ -175,8 +257,11 @@ export const AuthProvider = ({ children }) => {
     isLoading, // Expose loading state
     loginAsGuest,
     loginWithGoogle,
+    verifyPassword,
     getUserData,
     saveUserData,
+    saveUserProfile,
+    getUserProfile,
     logout
   };
 
