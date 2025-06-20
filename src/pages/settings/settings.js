@@ -8,11 +8,9 @@ import NotificationSettings from "../../components/settings/NotificationSettings
 import SecuritySettings from "../../components/settings/SecuritySettings";
 import AboutSettings from "../../components/settings/AboutSettings";
 import BusinessSettings from "../../components/settings/BusinessSettings";
-import { useTheme } from "../../contexts/ThemeContext";
 
 export default function Settings() {
   // Use the global theme context instead of local state
-  const { theme } = useTheme();
 
   return (
     <div className="relative min-h-screen bg-neutral-100 dark:bg-gray-900">

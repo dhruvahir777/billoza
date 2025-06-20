@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import ReportsHeading from '../../components/reports/reportsheading';
 import ReportsDisplay from '../../components/reports/reportsdisplay';
-import { useTheme } from '../../contexts/ThemeContext';
+
 
 export default function Reports() {
   // Use the global theme context
-  const { theme } = useTheme();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => setIsModalOpen(true);
