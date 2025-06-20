@@ -9,7 +9,7 @@ export default function Login() {
   const navigate = useNavigate();
   const { loginAsGuest, loginWithGoogle } = useAuth();
   // Use the global theme context
-  const { theme } = useTheme();
+  useTheme(); // Not using theme variable currently
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 

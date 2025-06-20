@@ -8,7 +8,7 @@ import { useTheme } from '../../contexts/ThemeContext'
 export default function Menu() {
   const { user, getUserData, saveUserData } = useAuth();
   // Use the global theme context
-  const { theme } = useTheme();
+  const { /* theme */ } = useTheme();
   const [menuData, setMenuData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);

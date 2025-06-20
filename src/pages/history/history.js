@@ -6,7 +6,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 export default function Customer() {
   const { user } = useAuth();
   // Use the global theme context
-  const { theme } = useTheme();
+  useTheme(); // Not using theme variable currently
 
   return (
     <div className="relative min-h-screen bg-neutral-100 dark:bg-gray-900">

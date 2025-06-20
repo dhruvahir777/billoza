@@ -275,7 +275,7 @@ export const animations = {
 };
 
 // Export all tokens
-export default {
+const designTokens = {
   colors,
   spacing,
   borderRadius,
@@ -283,3 +283,5 @@ export default {
   shadows,
   animations
 };
+
+export default designTokens;
