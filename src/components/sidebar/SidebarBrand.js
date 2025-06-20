@@ -31,7 +31,7 @@ export default function SidebarBrand({ isMinimized, onDoubleClick }) {
               />
             </div>
           </div>
-          <h1 className="text-lg font-bold text-gray-800 dark:text-white">
+          <h1 className="text-lg font-bold text-neutral-600 dark:text-white">
             Billoza
           </h1>
         </div>

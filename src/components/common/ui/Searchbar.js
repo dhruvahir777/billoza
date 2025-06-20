@@ -7,8 +7,9 @@ export default function Searchbar({ label, value, onChange, maxLength }) {
     <div className="relative w-full sm:col-span-1 lg:col-span-4">
       {/* Floating Label */}
       <label
-        className={`absolute left-3 px-1 bg-white transition-all duration-200 text-gray-500 pointer-events-none
+        className={`absolute left-3 px-1 bg-white transition-all duration-200 text-neutral-400 pointer-events-none
           ${isFocused || value ? "text-xs -top-2.5" : "text-sm top-3"}
+          ${isFocused ? "text-primary dark:text-primary-light" : ""}
         `}
       >
         {label}
@@ -17,7 +18,9 @@ export default function Searchbar({ label, value, onChange, maxLength }) {
       {/* Search Icon on the right */}
       <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
         <svg
-          className="h-5 w-5 text-gray-400"
+          className={`h-5 w-5 ${
+            isFocused ? "text-primary dark:text-primary-light" : "text-neutral-400"
+          }`}
           fill="currentColor"
           viewBox="0 0 20 20"
         >
@@ -38,9 +41,9 @@ export default function Searchbar({ label, value, onChange, maxLength }) {
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         className={`
-          w-full border rounded-md pr-10 pl-3 py-3 text-sm text-gray-800
-          appearance-none bg-white transition-colors duration-200 focus:outline-none
-          ${isFocused ? "border-gray-900" : "border-gray-400"}
+          w-full border rounded-md pr-10 pl-3 py-3 text-sm text-neutral-600 dark:text-white
+          appearance-none bg-white dark:bg-gray-800 transition-colors duration-200 focus:outline-none
+          ${isFocused ? "border-primary dark:border-primary-light" : "border-neutral-300 dark:border-gray-600"}
         `}
       />
     </div>

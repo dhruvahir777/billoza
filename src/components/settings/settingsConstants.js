@@ -16,11 +16,11 @@ export const USER_INFO = {
 };
 
 export const APP_INFO = {
-  name: "Restaurant Management System",
+  name: "Billoza",
   version: "1.2.0",
   build: "20250605",
   license: "Commercial",
-  support: "support@restaurant.com"
+  support: "support@billoza.com"
 };
 
 export const THEME_KEY = "foodx_theme";

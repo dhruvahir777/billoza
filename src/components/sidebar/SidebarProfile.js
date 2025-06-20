@@ -208,12 +208,12 @@ export default function SidebarProfile({ isMinimized }) {
             </button>
           </div>
         ) : (
-          <div className="flex justify-between items-center w-full">
+          <div className="flex justify-between items-center w-full max-w-full">
             <button
               onClick={handleProfileClick}
-              className="flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors flex-1"
+              className="flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors flex-1 w-full max-w-full"
             >
-              <div className="w-10 h-10 rounded-full overflow-hidden bg-cyan-700 text-white flex items-center justify-center font-bold mr-3">
+              <div className="w-10 h-10 rounded-full overflow-hidden bg-cyan-700 text-white flex items-center justify-center font-bold mr-3 flex-shrink-0">
                 {profileData?.profilePicture ? (
                   <img 
                     src={profileData.profilePicture} 
@@ -224,11 +224,11 @@ export default function SidebarProfile({ isMinimized }) {
                   <span>{user?.name?.charAt(0) || "U"}</span>
                 )}
               </div>
-              <div className="flex flex-col text-left min-w-0 flex-1">
-                <p className="text-sm font-medium text-text-light dark:text-text-dark overflow-hidden text-ellipsis whitespace-nowrap">
+              <div className="flex flex-col text-left min-w-0 overflow-hidden flex-1 w-full max-w-full">
+                <p className="text-sm font-medium text-text-light dark:text-text-dark truncate max-w-full" title={user?.name || "Guest User"}>
                   {user?.name || "Guest User"}
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 overflow-hidden text-ellipsis whitespace-nowrap" title={user?.email || "guest@billoza.com"}>
+                <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-full" title={user?.email || "guest@billoza.com"}>
                   {user?.email || "guest@billoza.com"}
                 </p>
               </div>

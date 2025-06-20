@@ -1,23 +1,18 @@
 // src/components/common/PageHeader.js
 import React from "react";
-import { Plus } from "lucide-react";
 
-const PageHeader = ({ title, subtitle, buttonText, onButtonClick }) => {
+const PageHeader = ({ title, subtitle, actions }) => {
   return (
-    <div className="p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface-light dark:bg-surface-dark rounded-2xl shadow mb-4">
+    <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
-        <h2 className="text-xl sm:text-2xl font-bold text-primary">{title}</h2>
-        <p className="text-text-light dark:text-text-dark mt-1 text-sm sm:text-base">{subtitle}</p>
+        <h1 className="text-2xl font-bold text-neutral-600 dark:text-white">{title}</h1>
+        {subtitle && (
+          <p className="text-sm text-neutral-400 dark:text-gray-400 mt-1">
+            {subtitle}
+          </p>
+        )}
       </div>
-      {buttonText && (
-        <button
-          onClick={onButtonClick}
-          className="flex items-center bg-primary text-white px-4 py-2 rounded-md transition text-sm sm:text-base hover:bg-primary-light"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          {buttonText}
-        </button>
-      )}
+      {actions && <div className="flex gap-2 items-center">{actions}</div>}
     </div>
   );
 };

@@ -11,8 +11,8 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  // Default to dark mode
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  // Default to light mode
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Load theme preference on app start
   useEffect(() => {
@@ -22,9 +22,9 @@ export const ThemeProvider = ({ children }) => {
       const isDark = savedTheme === 'dark';
       setIsDarkMode(isDark);
     } else {
-      // Default to dark mode if no preference saved
-      setIsDarkMode(true);
-      localStorage.setItem('billoza_theme', 'dark');
+      // Default to light mode if no preference saved
+      setIsDarkMode(false);
+      localStorage.setItem('billoza_theme', 'light');
     }
   }, []);
 
@@ -32,10 +32,10 @@ export const ThemeProvider = ({ children }) => {
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
-      document.body.style.backgroundColor = '#111827'; // gray-900
+      document.body.style.backgroundColor = '#181c23'; // dark background
     } else {
       document.documentElement.classList.remove('dark');
-      document.body.style.backgroundColor = '#ffffff'; // white
+      document.body.style.backgroundColor = '#F8F9FA'; // light background
     }
   }, [isDarkMode]);
 

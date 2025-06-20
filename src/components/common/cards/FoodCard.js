@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import { useDesignSystem } from "../../../design/DesignSystem";
 
-// Modern glassmorphism FoodCard (now with dark mode)
+// Modern FoodCard with new color palette that properly responds to theme changes
 export default function FoodCard({
   name = "Food Name",
   category = "Category",
@@ -8,23 +9,50 @@ export default function FoodCard({
   onAdd = () => {},
   imageUrl = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80"
 }) {
+  const cardRef = useRef(null);
+  const { primaryColor } = useDesignSystem();
+  
+  // Update the card's hover style when primaryColor changes
+  useEffect(() => {
+    if (cardRef.current) {
+      // Create a custom CSS rule for this specific card
+      const styleEl = document.createElement('style');
+      const uniqueId = `food-card-${Math.random().toString(36).substring(2, 10)}`;
+      
+      cardRef.current.classList.add(uniqueId);
+      
+      styleEl.innerHTML = `
+        .${uniqueId}:hover {
+          border-color: ${primaryColor} !important;
+          box-shadow: 0 0 0 1px ${primaryColor}33 !important;
+        }
+      `;
+      
+      document.head.appendChild(styleEl);
+      
+      return () => {
+        document.head.removeChild(styleEl);
+      };
+    }
+  }, [primaryColor]);
+
   return (
     <div
-      className="flex bg-gray-50/80 dark:bg-surface-dark/90 backdrop-blur-md rounded-2xl border border-gray-200/60 dark:border-border-light/20 p-4 w-full max-w-md items-center gap-5 hover:border-blue-300 dark:hover:border-accent hover:bg-gray-100/80 transition-all duration-200 group"
+      ref={cardRef}
+      className="flex bg-white dark:bg-gray-700 rounded-2xl border-2 border-neutral-200 dark:border-gray-600 p-4 w-full max-w-md items-center gap-5 transition-all duration-300 group shadow-sm"
       style={{ fontFamily: 'Poppins, Roboto, sans-serif' }}
     >
-      {/* Left: Food Image (removed) */}
       {/* Right: Details */}
       <div className="flex flex-col flex-1 justify-between h-full">
         <div>
-          <div className="text-lg font-bold text-gray-800 dark:text-text-dark mb-1 drop-shadow-sm tracking-wide">{name}</div>
-          <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider bg-gray-200/70 dark:bg-gray-700/50 px-2 py-1 rounded-full inline-block">{category}</div>
+          <div className="text-lg font-bold text-neutral-600 dark:text-white mb-1 tracking-wide">{name}</div>
+          <div className="text-xs text-neutral-500 dark:text-gray-300 mb-2 uppercase tracking-wider bg-neutral-100 dark:bg-gray-600 px-2 py-1 rounded-full inline-block">{category}</div>
         </div>
         <div className="flex items-center justify-between mt-2">
-          <div className="text-xl font-semibold text-gray-700 dark:text-text-dark">₹{price}</div>
+          <div className="text-xl font-semibold text-neutral-600 dark:text-white">₹{price}</div>
           <button
             onClick={onAdd}
-            className="bg-gradient-to-r from-blue-500 to-blue-600 dark:from-cyan-500 dark:to-blue-600 text-white px-5 py-2 rounded-full font-semibold hover:from-blue-600 hover:to-blue-700 dark:hover:from-cyan-400 dark:hover:to-blue-500 focus:outline-none transition-all duration-200"
+            className="bg-primary hover:bg-primary-dark text-white px-5 py-2 rounded-full font-semibold focus:outline-none transition-all duration-200"
           >
             Add
           </button>

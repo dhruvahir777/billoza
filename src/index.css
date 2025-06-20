@@ -2,7 +2,132 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom animations for settings */
+/* Define CSS color variables for dynamic theming */
+:root {
+  /* Primary Colors */
+  --color-primary-lighter: #7878FF;
+  --color-primary-light: #6B78FF;
+  --color-primary: #4A4AFF;
+  --color-primary-dark: #3838CC;
+  --color-primary-darker: #292999;
+  
+  /* Secondary Colors */
+  --color-secondary-lighter: #F0F2FF;
+  --color-secondary-light: #E9ECFF;
+  --color-secondary: #DDE1FF;
+  --color-secondary-dark: #C5CAFF;
+  --color-secondary-darker: #A6AEFF;
+  
+  /* Border Radius */
+  --border-radius-none: 0px;
+  --border-radius-xs: 0.25rem; /* 4px */
+  --border-radius-sm: 0.375rem; /* 6px */
+  --border-radius-default: 0.75rem; /* 12px */
+  --border-radius-md: 0.75rem; /* 12px */
+  --border-radius-lg: 1rem; /* 16px */
+  --border-radius-xl: 1.25rem; /* 20px */
+  --border-radius-2xl: 1.5rem; /* 24px */
+  --border-radius-3xl: 1.75rem; /* 28px */
+  --border-radius-4xl: 2rem; /* 32px */
+  --border-radius-full: 9999px;
+  
+  /* Font Families */
+  --font-family-poppins: 'Poppins', sans-serif;
+  --font-family-roboto: 'Roboto', sans-serif;
+  --font-family-public-sans: 'Public Sans', sans-serif;
+  
+  /* Shadows */
+  --shadow-card: 0 2px 8px 0 rgba(99, 99, 99, 0.1);
+  --shadow-card-hover: 0 6px 20px 0 rgba(99, 99, 99, 0.15);
+  --shadow-dropdown: 0 4px 16px 0 rgba(34, 48, 73, 0.12);
+  --shadow-button: 0 2px 6px 0 rgba(74, 74, 255, 0.15);
+  
+  /* Transitions */
+  --transition-default: all 0.2s ease;
+  --transition-fast: all 0.1s ease;
+  --transition-slow: all 0.3s ease;
+}
+
+/* Apply CSS variables to Tailwind classes */
+.text-primary {
+  color: var(--color-primary) !important;
+}
+.text-primary-light {
+  color: var(--color-primary-light) !important;
+}
+.text-primary-lighter {
+  color: var(--color-primary-lighter) !important;
+}
+.text-primary-dark {
+  color: var(--color-primary-dark) !important;
+}
+.text-primary-darker {
+  color: var(--color-primary-darker) !important;
+}
+
+.bg-primary {
+  background-color: var(--color-primary) !important;
+}
+.bg-primary-light {
+  background-color: var(--color-primary-light) !important;
+}
+.bg-primary-lighter {
+  background-color: var(--color-primary-lighter) !important;
+}
+.bg-primary-dark {
+  background-color: var(--color-primary-dark) !important;
+}
+.bg-primary-darker {
+  background-color: var(--color-primary-darker) !important;
+}
+
+.border-primary {
+  border-color: var(--color-primary) !important;
+}
+.border-primary-light {
+  border-color: var(--color-primary-light) !important;
+}
+.border-primary-lighter {
+  border-color: var(--color-primary-lighter) !important;
+}
+.border-primary-dark {
+  border-color: var(--color-primary-dark) !important;
+}
+.border-primary-darker {
+  border-color: var(--color-primary-darker) !important;
+}
+
+.ring-primary {
+  --tw-ring-color: var(--color-primary) !important;
+}
+.ring-primary-light {
+  --tw-ring-color: var(--color-primary-light) !important;
+}
+.ring-primary-lighter {
+  --tw-ring-color: var(--color-primary-lighter) !important;
+}
+.ring-primary-dark {
+  --tw-ring-color: var(--color-primary-dark) !important;
+}
+.ring-primary-darker {
+  --tw-ring-color: var(--color-primary-darker) !important;
+}
+
+/* Secondary color variants */
+.text-secondary {
+  color: var(--color-secondary) !important;
+}
+.bg-secondary {
+  background-color: var(--color-secondary) !important;
+}
+.border-secondary {
+  border-color: var(--color-secondary) !important;
+}
+.ring-secondary {
+  --tw-ring-color: var(--color-secondary) !important;
+}
+
+/* Custom animations */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -18,18 +143,23 @@
   animation: fade-in 0.5s ease-out;
 }
 
-html{
-  font-family: 'Public Sans';
+/* Apply common styles */
+html {
+  font-family: var(--font-family-public-sans);
   box-sizing: border-box;
 }
-*{
+
+* {
   box-sizing: border-box;
 }
-*, *:before, *:after{
+
+*,
+*:before,
+*:after {
   box-sizing: inherit;
 }
 
-
+/* Font Face Declarations */
 @font-face {
   font-family: 'Poppins';
   src: url('./assets/fonts/Poppins-Regular.ttf') format('truetype');
@@ -49,6 +179,23 @@ html{
   font-style: normal;
 }
 
+/* Card styling with gradients */
+.card-parent {
+  border-radius: var(--border-radius-3xl);
+  box-shadow: var(--shadow-card);
+  transition: var(--transition-default);
+}
+.card-parent:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* Button styling */
+.btn {
+  border-radius: var(--border-radius-full);
+  transition: var(--transition-default);
+}
+
+/* Sidebar gradient effect */
 .sidebar-gradient::before {
   content: "";
   position: absolute;
@@ -56,11 +203,12 @@ html{
   right: 0;
   width: 200px;
   height: 200px;
-  background: radial-gradient(circle at top right, rgba(0, 0, 255, 0.08), transparent 70%);
+  background: radial-gradient(circle at top right, rgba(var(--color-primary-rgb), 0.08), transparent 70%);
   pointer-events: none;
   z-index: 1;
 }
 
+/* Scrollbar styling */
 /* Hide scrollbar for Chrome, Safari and Opera */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
@@ -74,7 +222,7 @@ html{
 /* GLOBAL: Minimal dot scrollbar for all scrollable elements */
 html, body, * {
   scrollbar-width: thin !important;
-  scrollbar-color: #3b82f6 #232a36 !important;
+  scrollbar-color: var(--color-primary) #232a36 !important;
 }
 *::-webkit-scrollbar {
   width: 5px !important;
@@ -82,12 +230,12 @@ html, body, * {
   background: transparent !important;
 }
 *::-webkit-scrollbar-thumb {
-  background: #3b82f6 !important;
+  background: var(--color-primary) !important;
   border-radius: 8px !important;
   min-height: 24px !important;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background: #2563eb !important;
+  background: var(--color-primary-dark) !important;
 }
 *::-webkit-scrollbar-track {
   background: transparent !important;
@@ -114,29 +262,24 @@ body:has(aside.w-24) {
   --sidebar-width: 96px;
 }
 
-/* Mobile responsive - hide left offset on small screens */
-@media (max-width: 1024px) {
-  .sidebar-responsive-header {
-    left: 0 !important;
+/* Custom component classes */
+@layer components {
+  /* Food Card Component */
+  .food-card {
+    @apply bg-white dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark shadow-card hover:shadow-card-hover transition-all overflow-hidden;
   }
-}
-
-/* Scrollbar styling */
-.scrollbar-dot::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.scrollbar-dot::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.scrollbar-dot::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.5);
-  border-radius: 3px;
-}
-
-.scrollbar-dot::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.8);
+  
+  /* Category Pills/Buttons */
+  .category-pill {
+    @apply px-5 py-2 rounded-full border text-sm font-semibold transition-all flex items-center backdrop-blur-md;
+  }
+  
+  .category-pill-active {
+    @apply bg-gradient-to-r from-primary to-primary-dark text-white border-primary;
+  }
+  
+  .category-pill-inactive {
+    @apply bg-white/60 dark:bg-surface-dark/10 text-gray-700 dark:text-text-dark border-gray-300 dark:border-border-dark/20 hover:bg-primary-lighter hover:text-primary hover:border-primary/30;
+  }
 }
 

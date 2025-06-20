@@ -34,7 +34,7 @@ export default function Sidebar() {
           isMinimized
             ? "w-24 overflow-hidden"
             : "w-52 sidebar-gradient overflow-hidden"
-        } bg-surface-light border-r border-border-light dark:bg-surface-dark dark:border-border-dark transition-all duration-300 transform ${
+        } bg-white border-r border-neutral-200 dark:bg-surface-dark dark:border-border-dark transition-all duration-300 transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 overflow-y-auto flex flex-col`}
       >

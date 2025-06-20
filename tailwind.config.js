@@ -1,84 +1,86 @@
+import designTokens from './src/design/tokens.js';
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   content: ["./src/**/*.{html,js,jsx,ts,tsx}"],
   darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
-      // Standardized border radius for consistent rounded corners
-      borderRadius: {
-        'none': '0px',
-        'sm': '0.375rem',     // 6px - Small elements
-        'DEFAULT': '0.75rem', // 12px - Default rounded (was 0.25rem)
-        'md': '0.75rem',      // 12px - Medium elements  
-        'lg': '1rem',         // 16px - Large cards and containers
-        'xl': '1.25rem',      // 20px - Extra large containers
-        '2xl': '1.5rem',      // 24px - Very large containers
-        '3xl': '2rem',        // 32px - Maximum rounded corners
-        'full': '9999px',     // Full circle/pill shape
+      colors: designTokens.colors,
+      borderRadius: designTokens.borderRadius,
+      fontFamily: designTokens.typography.fontFamily,
+      fontSize: designTokens.typography.fontSize,
+      fontWeight: designTokens.typography.fontWeight,
+      boxShadow: designTokens.shadows.boxShadow,
+      spacing: designTokens.spacing,
+      transitionProperty: {
+        'height': 'height',
+        'spacing': 'margin, padding',
       },
-      colors: {
-        // Unified semantic color palette
-        primary: {
-          light: '#60a5fa', // blue-400
-          DEFAULT: '#2563eb', // blue-600
-          dark: '#1e40af', // blue-800
-        },
-        secondary: {
-          light: '#fbbf24', // amber-400
-          DEFAULT: '#f59e42', // amber-500
-          dark: '#b45309', // amber-800
-        },
-        background: {
-          light: '#f9fafb', // gray-50
-          DEFAULT: '#181c23', // dark bg
-          dark: '#101217', // even darker
-        },
-        surface: {
-          light: '#ffffff',
-          DEFAULT: '#ffffff', // default to white
-          dark: '#232a36',
-        },
-        border: {
-          light: '#e5e7eb', // gray-200
-          DEFAULT: '#e5e7eb', // default to light
-          dark: '#232a39',
-        },
-        text: {
-          light: '#18181b', // zinc-900
-          DEFAULT: '#18181b', // default to dark text
-          dark: '#f3f4f6', // gray-100
-        },
-        accent: {
-          light: '#38bdf8', // sky-400
-          DEFAULT: '#0891b2', // cyan-700
-          dark: '#0891b2', // cyan-700
-        },
-        error: {
-          light: '#fca5a5', // red-300
-          dark: '#ef4444', // red-500
-        },
-        success: {
-          light: '#bbf7d0', // green-200
-          dark: '#22c55e', // green-500
-        },
-        warning: {
-          light: '#fde68a', // yellow-200
-          dark: '#f59e42', // amber-500
-        },
-      },
-      fontFamily: {
-        poppins: ["Poppins", "sans-serif"],
-        roboto: ["Roboto", "sans-serif"],
-        publicSans: ["Public Sans", "sans-serif"],
-      },
-      boxShadow: {
-        "1":
-          "0 0 4px 0 rgba(145, 158, 171, 0.1), 0 10px 24px -2px rgba(145, 158, 171, 0.12)",
-      },
+      transitionDuration: {
+        '2000': '2000ms',
+      }
     },
   },
-  animation: {
-    dropdown: 'dropdownFade 0.2s ease-out forwards',
-  },
-  plugins: [],
+  plugins: [
+    function ({ addComponents }) {
+      addComponents({
+        // Parent Card - with 28px border radius (3xl)
+        '.card-parent': {
+          '@apply bg-white dark:bg-surface-dark rounded-3xl border border-border-light dark:border-border-dark shadow-card transition-all p-6': {},
+          '&:hover': {
+            '@apply shadow-card-hover': {},
+          },
+        },
+        // Child Card - with standard border radius
+        '.card-child': {
+          '@apply bg-white dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark shadow-sm p-4': {},
+        },
+        // Button styles
+        '.btn': {
+          '@apply px-4 py-2 font-medium transition-all rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2': {},
+        },
+        '.btn-primary': {
+          '@apply bg-primary text-white hover:bg-primary-dark focus:ring-primary-light': {},
+        },
+        '.btn-secondary': {
+          '@apply bg-secondary text-primary hover:bg-secondary-dark focus:ring-secondary-light': {},
+        },
+        '.btn-outline': {
+          '@apply border border-primary text-primary hover:bg-primary-lighter hover:text-primary-dark focus:ring-primary-light': {},
+        },
+        // Food Card
+        '.food-card': {
+          '@apply bg-white dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark shadow-card hover:shadow-card-hover transition-all overflow-hidden': {},
+        },
+      })
+    },
+    function ({ addBase, theme }) {
+      addBase({
+        'html': { 
+          fontFamily: theme('fontFamily.publicSans'),
+          color: theme('colors.text.DEFAULT'),
+          backgroundColor: theme('colors.background.DEFAULT'),
+        },
+        'body': {
+          '@apply bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors': {},
+        },
+        'h1': { 
+          '@apply text-3xl font-bold': {},
+        },
+        'h2': { 
+          '@apply text-2xl font-semibold': {},
+        },
+        'h3': { 
+          '@apply text-xl font-semibold': {},
+        },
+        'h4': { 
+          '@apply text-lg font-medium': {},
+        },
+        'p': { 
+          '@apply text-base': {},
+        },
+      })
+    },
+  ],
 };

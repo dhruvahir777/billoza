@@ -100,9 +100,9 @@ function CreateOrder() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-6 w-full h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-background-dark dark:to-surface-dark p-6 overflow-hidden" style={{ fontFamily: 'Poppins, Roboto, sans-serif' }}>
+    <div className="flex flex-col md:flex-row gap-6 w-full h-screen bg-neutral-100 dark:bg-gray-900 p-6 overflow-hidden" style={{ fontFamily: 'Poppins, Roboto, sans-serif' }}>
       {/* Left: Menu Items */}
-      <div className="flex-1 flex flex-col bg-white/50 dark:bg-surface-dark/70 backdrop-blur-xl rounded-3xl border border-gray-200/60 dark:border-border-dark/10 p-6 h-full overflow-hidden">
+      <div className="flex-1 flex flex-col bg-white dark:bg-gray-800 rounded-3xl border border-neutral-200 dark:border-gray-700 p-6 h-full overflow-hidden shadow-sm">
         {/* Searchbar for menu items (above filters) */}
         <div className="mb-6 flex flex-col sm:flex-row gap-3 items-center justify-between flex-shrink-0">
           <div className="relative w-full">
@@ -111,15 +111,15 @@ function CreateOrder() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search by name, price, or type..."
-              className="w-full pl-12 pr-12 py-3 rounded-full border border-gray-200 dark:border-border-dark/20 bg-white/60 dark:bg-surface-dark/10 text-gray-800 dark:text-text-dark text-base focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 placeholder:text-gray-500 backdrop-blur-md"
+              className="w-full pl-12 pr-12 py-3 rounded-full border border-neutral-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-neutral-600 dark:text-white text-base focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary placeholder:text-neutral-400 dark:placeholder:text-gray-400"
               style={{ fontFamily: 'Poppins, Roboto, sans-serif' }}
             />
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary">
               <FiSearch size={20} />
             </span>
             {search && (
               <button
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400"
                 onClick={() => setSearch('')}
                 title="Clear search"
               >
@@ -134,8 +134,8 @@ function CreateOrder() {
               key={cat}
               className={`px-5 py-2 rounded-full border text-sm font-semibold transition-all flex items-center backdrop-blur-md
                 ${selectedCategory === cat
-                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white border-blue-500'
-                  : 'bg-white/60 dark:bg-surface-dark/10 text-gray-700 dark:text-text-dark border-gray-300 dark:border-border-dark/20 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300'}
+                  ? 'bg-primary text-white border-primary'
+                  : 'bg-white dark:bg-gray-700 text-neutral-600 dark:text-white border-neutral-200 dark:border-gray-600 hover:bg-primary-light/10 hover:text-primary hover:border-primary/30'}
                 `}
               onClick={() => setSelectedCategory(cat)}
               style={{ fontFamily: 'Poppins, Roboto, sans-serif' }}
@@ -150,17 +150,17 @@ function CreateOrder() {
           {currentMenuData.length === 0 && !user?.hasStaticData ? (
             // Empty state for new users
             <div className="col-span-full text-center py-20">
-              <div className="bg-white/40 dark:bg-surface-dark/10 rounded-2xl p-8 backdrop-blur-md border border-gray-200 dark:border-border-light/20">
-                <GiMeal className="mx-auto text-gray-400 mb-4" size={48} />
-                <h3 className="text-xl font-semibold text-gray-800 dark:text-text-dark mb-2">
+              <div className="bg-neutral-100 dark:bg-gray-700 rounded-2xl p-8 border border-neutral-200 dark:border-gray-600">
+                <GiMeal className="mx-auto text-neutral-400 dark:text-gray-400 mb-4" size={48} />
+                <h3 className="text-xl font-semibold text-neutral-600 dark:text-white mb-2">
                   No Menu Items Yet
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                <p className="text-neutral-400 dark:text-gray-400 mb-4">
                   You need to add menu items first before taking orders.
                 </p>
                 <button
                   onClick={() => window.location.href = '/menu'}
-                  className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-sm"
+                  className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-medium rounded-xl shadow-sm"
                 >
                   Go to Menu Management
                 </button>
@@ -169,7 +169,7 @@ function CreateOrder() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pb-4">
               {filteredMenu.length === 0 ? (
-                <div className="col-span-full text-center text-gray-500 py-10 text-lg">
+                <div className="col-span-full text-center text-neutral-400 dark:text-gray-400 py-10 text-lg">
                   {user?.hasStaticData ? "No items found." : "No menu items available."}
                 </div>
               ) : (
@@ -189,10 +189,10 @@ function CreateOrder() {
         </div>
       </div>
       
-      {/* Right: Order & Bill (glassmorphism card) */}
-      <div className="flex flex-col bg-white/50 dark:bg-surface-dark/70 backdrop-blur-xl rounded-3xl border border-gray-200/60 dark:border-border-dark/10 p-6 h-full overflow-hidden w-full md:w-[400px]">
+      {/* Right: Order & Bill */}
+      <div className="flex flex-col bg-white dark:bg-gray-800 rounded-3xl border border-neutral-200 dark:border-gray-700 p-6 h-full overflow-hidden w-full md:w-[400px] shadow-sm">
         <div className="flex items-center justify-between mb-6 flex-shrink-0">
-          <h3 className="text-2xl font-bold text-gray-800 dark:text-text-dark tracking-wide">Order Items</h3>
+          <h3 className="text-2xl font-bold text-neutral-600 dark:text-white tracking-wide">Order Items</h3>
           <div className="w-48">
             <FancyDropdown
               label=""
@@ -207,11 +207,11 @@ function CreateOrder() {
         {/* Order items list - takes remaining height */}
         <div className="flex-1 overflow-y-auto mb-6 scrollbar-dot">
           {orderItems.length === 0 ? (
-            <div className="text-gray-500 text-center mt-10">No items added.</div>
+            <div className="text-neutral-400 dark:text-gray-400 text-center mt-10">No items added.</div>
           ) : (
             <div className="flex flex-col">
               {/* Table Header */}
-              <div className="flex text-sm font-bold text-gray-700 dark:text-text-dark bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-accent/20 dark:to-primary/20 backdrop-blur-md rounded-xl px-4 py-3 mb-4 border border-blue-200 dark:border-accent/30">
+              <div className="flex text-sm font-bold text-neutral-600 dark:text-white bg-neutral-100 dark:bg-gray-700 rounded-xl px-4 py-3 mb-4 border border-neutral-200 dark:border-gray-600">
                 <div className="flex-1">Item Name</div>
                 <div className="w-24 text-center">Quantity</div>
                 <div className="w-20 text-right">Total</div>
@@ -221,28 +221,28 @@ function CreateOrder() {
               {/* Order Items */}
               <div className="space-y-0">
                 {orderItems.map((item, index) => (
-                  <div key={item.itemName} className="flex items-center px-4 py-3 border-b border-dashed border-gray-200 dark:border-border-dark/50 hover:bg-gray-50 dark:hover:bg-surface-dark/5 transition-all duration-200">
-                    <div className="flex-1 font-medium text-gray-800 dark:text-text-dark">{item.itemName}</div>
+                  <div key={item.itemName} className="flex items-center px-4 py-3 border-b border-dashed border-neutral-200 dark:border-gray-600 hover:bg-neutral-100 dark:hover:bg-gray-700/50 transition-all duration-200">
+                    <div className="flex-1 font-medium text-neutral-600 dark:text-white">{item.itemName}</div>
                     <div className="w-24 flex items-center justify-center gap-1">
                       <button
-                        className="p-1 rounded-lg bg-gray-100 dark:bg-surface-dark/10 hover:bg-blue-100 dark:hover:bg-accent/20 text-blue-600 dark:text-accent transition-colors border border-gray-200/50 dark:border-transparent"
+                        className="p-1 rounded-lg bg-neutral-100 dark:bg-gray-700 hover:bg-primary-light/20 dark:hover:bg-primary/20 text-primary dark:text-primary-light transition-colors border border-neutral-200 dark:border-gray-600"
                         onClick={() => updateQty(item.itemName, item.qty - 1)}
                         disabled={item.qty <= 1}
                       >
                         <FiMinus size={14} />
                       </button>
-                      <span className="px-3 py-1 min-w-[32px] text-center text-gray-800 dark:text-text-dark bg-gray-100 dark:bg-surface-dark/10 rounded-lg border border-gray-200/50 dark:border-transparent">{item.qty}</span>
+                      <span className="px-3 py-1 min-w-[32px] text-center text-neutral-600 dark:text-white bg-neutral-100 dark:bg-gray-700 rounded-lg border border-neutral-200 dark:border-gray-600">{item.qty}</span>
                       <button
-                        className="p-1 rounded-lg bg-gray-100 dark:bg-surface-dark/10 hover:bg-blue-100 dark:hover:bg-accent/20 text-blue-600 dark:text-accent transition-colors border border-gray-200/50 dark:border-transparent"
+                        className="p-1 rounded-lg bg-neutral-100 dark:bg-gray-700 hover:bg-primary-light/20 dark:hover:bg-primary/20 text-primary dark:text-primary-light transition-colors border border-neutral-200 dark:border-gray-600"
                         onClick={() => updateQty(item.itemName, item.qty + 1)}
                       >
                         <FiPlus size={14} />
                       </button>
                     </div>
-                    <div className="w-20 text-right text-blue-600 dark:text-accent font-semibold">₹{(parsePrice(item.price) * item.qty).toFixed(2)}</div>
+                    <div className="w-20 text-right text-primary dark:text-primary-light font-semibold">₹{(parsePrice(item.price) * item.qty).toFixed(2)}</div>
                     <div className="w-8 flex justify-end">
                       <button
-                        className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-400/20 text-red-500 dark:text-red-400 transition-colors border border-transparent hover:border-red-200/50 dark:hover:border-transparent"
+                        className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-400/20 text-red-500 dark:text-red-400 transition-colors border border-transparent hover:border-red-200 dark:hover:border-red-400/20"
                         onClick={() => removeItem(item.itemName)}
                         title="Remove"
                       >
@@ -257,21 +257,21 @@ function CreateOrder() {
         </div>
         
         {/* Bill summary - fixed at bottom */}
-        <div className="bg-gray-50/80 dark:bg-surface-dark/10 backdrop-blur rounded-2xl p-4 mb-4 border border-gray-200/50 dark:border-border-dark/10 flex-shrink-0">
-          <div className="flex justify-between mb-1 text-gray-600 dark:text-text-dark/70 text-sm">
+        <div className="bg-neutral-100 dark:bg-gray-700 rounded-2xl p-4 mb-4 border border-neutral-200 dark:border-gray-600 flex-shrink-0">
+          <div className="flex justify-between mb-1 text-neutral-500 dark:text-gray-300 text-sm">
             <span>Subtotal</span>
             <span>₹{subtotal.toFixed(2)}</span>
           </div>
-          <div className="flex justify-between mb-1 text-gray-600 dark:text-text-dark/70 text-sm">
+          <div className="flex justify-between mb-1 text-neutral-500 dark:text-gray-300 text-sm">
             <span>GST (5%)</span>
             <span>₹{tax.toFixed(2)}</span>
           </div>
-          <div className="flex justify-between text-xl font-bold text-gray-800 dark:text-text-dark mt-2">
+          <div className="flex justify-between text-xl font-bold text-neutral-600 dark:text-white mt-2">
             <span>Total</span>
             <span>₹{total.toFixed(2)}</span>
           </div>
         </div>
-        <button className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-accent dark:to-primary text-white rounded-2xl font-semibold text-lg hover:from-blue-600 hover:to-blue-700 dark:hover:from-accent/80 dark:hover:to-primary/80 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-accent/60 transition-all flex-shrink-0">
+        <button className="w-full py-3 bg-primary hover:bg-primary-dark text-white rounded-2xl font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-primary/30 dark:focus:ring-primary/60 transition-all flex-shrink-0">
           Place Order
         </button>
       </div>
