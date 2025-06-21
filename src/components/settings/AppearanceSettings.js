@@ -8,19 +8,11 @@ import { useDesignSystem } from "../../design/DesignSystem";
 export default function AppearanceSettings() {
   const { isDarkMode,  setTheme } = useTheme();
   const {  setAccentColor } = useColor();
-  const { primaryColor, updatePrimaryColor, borderRadius, updateBorderRadius, resetTheme } = useDesignSystem();
+  const { primaryColor, updatePrimaryColor } = useDesignSystem();
   
   const [customColor, setCustomColor] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
   
-  // Border radius options
-  const borderRadiusOptions = [
-    { label: "Default (28px)", value: "1.75rem" },
-    { label: "Large (24px)", value: "1.5rem" },
-    { label: "Medium (16px)", value: "1rem" },
-    { label: "Small (12px)", value: "0.75rem" },
-  ];
-
   // Predefined accent colors
   const predefinedColors = [
     { name: "Purple", value: "#4A4AFF" }, // Primary purple
@@ -224,105 +216,6 @@ export default function AppearanceSettings() {
               )}
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Border Radius Settings */}
-      <div className="mb-8">
-        <h3 className="text-lg font-medium text-neutral-600 dark:text-white mb-4">Border Radius</h3>
-        <p className="text-neutral-400 dark:text-gray-400 mb-6">Adjust the roundness of corners in the application.</p>
-        
-        <div className="mb-6">
-          <h4 className="text-sm font-medium text-neutral-600 dark:text-white mb-3">Parent Container Radius</h4>
-          <div className="grid grid-cols-4 gap-3 mb-4">
-            {borderRadiusOptions.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => updateBorderRadius('parent', option.value)}
-                className={`relative p-3 rounded-lg border transition-all ${
-                  borderRadius.parent === option.value
-                    ? "border-primary bg-primary-light/10 dark:bg-primary/30"
-                    : "border-neutral-200 dark:border-gray-600 hover:border-neutral-300 dark:hover:border-gray-500"
-                }`}
-              >
-                <div 
-                  className="w-full h-12 bg-neutral-200 dark:bg-gray-600 mb-2"
-                  style={{ borderRadius: option.value }}
-                ></div>
-                <div className="text-xs font-medium text-neutral-600 dark:text-white">{option.label}</div>
-              </button>
-            ))}
-          </div>
-
-          {/* Preview of current border radius */}
-          <div className="p-4 bg-neutral-100 dark:bg-gray-700 rounded-lg">
-            <p className="font-medium text-neutral-600 dark:text-white mb-3">Current Border Radius Preview</p>
-            <div className="flex flex-wrap gap-4">
-              <div>
-                <div 
-                  className="w-24 h-16 bg-primary flex items-center justify-center text-white font-medium"
-                  style={{ borderRadius: borderRadius.parent }}
-                >
-                  Parent
-                </div>
-                <p className="text-xs text-neutral-400 dark:text-gray-400 mt-2 text-center">
-                  Parent: {borderRadius.parent}
-                </p>
-              </div>
-              <div>
-                <div 
-                  className="w-24 h-16 bg-primary-light flex items-center justify-center text-primary font-medium"
-                  style={{ borderRadius: borderRadius.child }}
-                >
-                  Child
-                </div>
-                <p className="text-xs text-neutral-400 dark:text-gray-400 mt-2 text-center">
-                  Child: {borderRadius.child}
-                </p>
-              </div>
-              <div>
-                <div 
-                  className="w-24 h-16 bg-primary flex items-center justify-center text-white font-medium"
-                  style={{ borderRadius: borderRadius.button }}
-                >
-                  Button
-                </div>
-                <p className="text-xs text-neutral-400 dark:text-gray-400 mt-2 text-center">
-                  Button: {borderRadius.button}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Reset All Theme Settings */}
-      <div className="mb-8">
-        <h3 className="text-lg font-medium text-neutral-600 dark:text-white mb-4">Reset Settings</h3>
-        <p className="text-neutral-400 dark:text-gray-400 mb-6">Restore all appearance settings to default values.</p>
-        
-        <button
-          onClick={resetTheme}
-          className="px-6 py-3 bg-neutral-100 dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 text-neutral-600 dark:text-white rounded-lg hover:bg-neutral-200 dark:hover:bg-gray-600 transition-colors"
-        >
-          Reset to Default Theme
-        </button>
-      </div>
-
-      {/* Display Settings */}
-      <div className="mb-8">
-        <h3 className="text-lg font-medium text-neutral-600 dark:text-white mb-4">Display</h3>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-neutral-100 dark:bg-gray-700 rounded-lg">
-            <div>
-              <p className="font-medium text-neutral-600 dark:text-white">Compact mode</p>
-              <p className="text-sm text-neutral-400 dark:text-gray-400">Reduce spacing between elements</p>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" />
-              <div className="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-light/30 dark:peer-focus:ring-primary/30 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
-            </label>
-          </div>
         </div>
       </div>
     </div>

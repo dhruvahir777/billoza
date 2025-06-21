@@ -18,6 +18,7 @@ export default function SelectMenu({
         value={value}
         onChange={onChange}
         placeholder="Select..."
+        popoverClassName="dropdown-popover"
       />
       {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
     </div>

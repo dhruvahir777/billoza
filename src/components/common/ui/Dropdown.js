@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { ChevronDown } from "lucide-react";
 
 export default function FancyDropdown({
@@ -7,78 +8,92 @@ export default function FancyDropdown({
   value,
   onChange,
   placeholder = "Select...",
+  disabled = false,
+  popoverClassName = ""
 }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const buttonRef = useRef(null);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+
+  // Calculate dropdown position
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+        width: rect.width
+      });
+    }
+  }, [isOpen]);
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (ref.current && !ref.current.contains(event.target)) {
-        setOpen(false);
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
       }
-    }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const selected = options.find((opt) => opt.value === value);
+  const selectedOption = options.find((opt) => opt.value === value);
 
   return (
-    <div className="relative w-full" ref={ref}>
+    <div className="relative w-full">
       {label && (
         <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
           {label}
         </label>
       )}
       <button
+        ref={buttonRef}
         type="button"
-        className={`w-full min-w-[200px] flex justify-between items-center border rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md ${
-          open ? "border-blue-500 ring-2 ring-blue-500/20" : "border-gray-200 dark:border-gray-600"
-        }`}
-        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center justify-between rounded-lg bg-white dark:bg-gray-700 px-4 py-3 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-200"
+        onClick={() => setIsOpen(!isOpen)}
+        disabled={disabled}
       >
-        <span className="flex-1 text-left truncate">
-          {selected ? (
-            <span className="text-gray-900 dark:text-gray-100">{selected.label}</span>
-          ) : (
-            <span className="text-gray-400 dark:text-gray-500">{placeholder}</span>
-          )}
+        <span className={`block truncate ${value ? '' : 'text-gray-400'}`}>
+          {selectedOption ? selectedOption.label : placeholder}
         </span>
-        <ChevronDown
-          className={`ml-2 h-4 w-4 text-gray-400 transition-transform duration-200 ${
-            open ? "rotate-180" : ""
-          }`}
-        />
+        <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${isOpen ? 'transform rotate-180' : ''}`} />
       </button>
       
-      {open && (
-        <div className="absolute z-[9999] mt-2 w-full min-w-[200px] bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-600 py-2 max-h-64 overflow-auto">
-          <div className="py-1">
-            {options.map((opt, index) => (
-              <button
-                key={opt.value}
-                type="button"
-                className={`w-full px-4 py-3 text-left text-sm font-medium transition-all duration-150 hover:bg-blue-50 dark:hover:bg-gray-700 focus:outline-none focus:bg-blue-50 dark:focus:bg-gray-700 ${
-                  value === opt.value 
-                    ? "bg-blue-50 dark:bg-gray-700 text-blue-600 dark:text-blue-400 border-r-2 border-blue-500" 
-                    : "text-gray-700 dark:text-gray-200"
-                } ${index === 0 ? 'rounded-t-lg' : ''} ${index === options.length - 1 ? 'rounded-b-lg' : ''}`}
+      {isOpen && createPortal(
+        <div 
+          ref={dropdownRef}
+          className={`fixed py-1 max-h-60 overflow-auto rounded-md bg-white dark:bg-gray-700 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-[9999] ${popoverClassName}`}
+          style={{
+            top: `${dropdownPosition.top}px`,
+            left: `${dropdownPosition.left}px`,
+            width: `${dropdownPosition.width}px`
+          }}
+        >
+          <ul className="py-1 text-sm">
+            {options.map((option) => (
+              <li
+                key={option.value}
+                className={`cursor-pointer select-none px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-600 ${
+                  value === option.value ? 'bg-gray-100 dark:bg-gray-600' : ''
+                }`}
                 onClick={() => {
-                  onChange(opt.value);
-                  setOpen(false);
+                  onChange(option.value);
+                  setIsOpen(false);
                 }}
               >
-                <div className="flex items-center justify-between">
-                  <span className="truncate">{opt.label}</span>
-                  {value === opt.value && (
-                    <div className="w-2 h-2 bg-blue-500 rounded-full ml-2"></div>
-                  )}
-                </div>
-              </button>
+                {option.label}
+              </li>
             ))}
-          </div>
-        </div>
+            {options.length === 0 && (
+              <li className="px-4 py-2.5 text-gray-400 cursor-default">
+                No options available
+              </li>
+            )}
+          </ul>
+        </div>,
+        document.body
       )}
     </div>
   );

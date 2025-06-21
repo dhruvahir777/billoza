@@ -49,38 +49,6 @@ export default function AboutSettings() {
           </div>
           
           {/* Additional Info */}
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div className="text-center p-3 bg-primary-light/10 dark:bg-primary/30 rounded-lg">
-                <p className="text-primary dark:text-primary-light font-semibold">Release Date</p>
-                <p className="text-gray-900 dark:text-white">June 2025</p>
-              </div>
-              <div className="text-center p-3 bg-green-50 dark:bg-green-900/30 rounded-lg">
-                <p className="text-green-600 dark:text-green-400 font-semibold">Platform</p>
-                <p className="text-gray-900 dark:text-white">Web Application</p>
-              </div>
-              <div className="text-center p-3 bg-primary-light/10 dark:bg-primary/30 rounded-lg">
-                <p className="text-primary dark:text-primary-light font-semibold">Framework</p>
-                <p className="text-gray-900 dark:text-white">React 18</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Action Buttons */}
-        <div className="flex flex-wrap gap-3">
-          <button className="flex-1 min-w-[200px] px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors flex items-center justify-center space-x-2">
-            <FiInfo size={16} />
-            <span>Check for Updates</span>
-          </button>
-          
-          <button className="flex-1 min-w-[200px] px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
-            View Documentation
-          </button>
-          
-          <button className="flex-1 min-w-[200px] px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-            Contact Support
-          </button>
         </div>
         
         {/* Footer Info */}

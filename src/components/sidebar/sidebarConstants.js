@@ -21,7 +21,7 @@ export const TEXTS = {
 export const MENU_ITEMS = [
   { icon: FaRegListAlt, label: "Order", to: "/order" }, // Dashboard -> Order
   { icon: MdHistory, label: "History", to: "/customers" }, // Customers -> History
-  { icon: GiKnifeFork, label: "Manu", to: "/menu" }, // Route fixed to /menu
+  { icon: GiKnifeFork, label: "Menu", to: "/menu" }, // Route fixed to /menu
   { icon: BsBarChartFill, label: "Reports", to: "/reports" }, // Reports (as is)
   { icon: LuSettings2, label: "Settings", to: "/settings" }, // Added Settings tab
 ];

@@ -15,7 +15,6 @@ export default function NewTable({ columns, data, searchPlaceholder = "Search...
   const headerRef = useRef(null);
   const tableHeaderRef = useRef(null);
   const { primaryColor } = useDesignSystem();
-
   // Create dynamic styles for table header
   useEffect(() => {
     if (headerRef.current && tableHeaderRef.current) {
@@ -30,8 +29,13 @@ export default function NewTable({ columns, data, searchPlaceholder = "Search...
         document.head.appendChild(styleEl);
       }
       
-      // Update the style with the primary color 
+      // Update the style with the primary color
       styleEl.innerHTML = `
+        .dropdown-popover {
+          position: absolute !important;
+          z-index: 9999 !important;
+        }
+        
         .table-header-bg {
           background-color: ${primaryColor}10 !important; /* Very light primary color */
         }
@@ -42,7 +46,7 @@ export default function NewTable({ columns, data, searchPlaceholder = "Search...
         .fixed-table-header {
           position: sticky !important;
           top: 0 !important;
-          z-index: 50 !important;
+          z-index: 2 !important;
           background-color: #ffffff !important;
           box-shadow: none !important;
         }
@@ -54,7 +58,7 @@ export default function NewTable({ columns, data, searchPlaceholder = "Search...
         .fixed-table-header th {
           background-color: inherit !important;
           position: relative !important;
-          z-index: inherit !important;
+          z-index: 1 !important;
         }
       `;
       
@@ -139,11 +143,10 @@ export default function NewTable({ columns, data, searchPlaceholder = "Search...
         display: 'flex',
         flexDirection: 'column'
       }}
-    >
-      {/* Header Section with Search - Fixed height */}
+    >      {/* Header Section with Search - Fixed height */}
       <div 
         ref={headerRef}
-        className="table-header-bg px-6 py-5 border-b border-gray-200 dark:border-gray-600 relative z-10 flex-shrink-0"
+        className="table-header-bg px-6 py-5 border-b border-gray-200 dark:border-gray-600 relative z-5 flex-shrink-0"
       >
         <div className="flex items-center justify-between gap-4">
           {/* Search Input with Icon */}
@@ -241,7 +244,7 @@ export default function NewTable({ columns, data, searchPlaceholder = "Search...
                       {columns.map((col, colIdx) => (
                         <td
                           key={col.key}
-                          className="px-6 py-4 whitespace-nowrap text-sm"
+                          className="px-6 py-4 whitespace-nowrap text-sm table-body-cell"
                           style={{ width: `${100 / columns.length}%` }}
                         >
                           <div className="text-gray-900 dark:text-gray-100">
